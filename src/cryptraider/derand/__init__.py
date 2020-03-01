@@ -1,1 +1,1 @@
-from .pyrand import PythonRandomContinuousIntStream
+from .mersenne import PythonRandomContinuousIntStream
