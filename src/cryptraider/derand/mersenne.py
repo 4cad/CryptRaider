@@ -24,6 +24,14 @@ def untemper(x):
     x = unshiftRight(x, 11)
     return x
 
+def twist(a, b, c) :
+    x = ((a & 0x80000000) + (b & 0x7fffffff)) & 0xFFFFFFFF
+    twisted = c ^ (x >> 1)
+
+    if x & 1 != 0:
+        twisted ^= 0x9908b0df
+    return twisted
+
 class PythonRandomContinuousIntStream :
     def __init__(self) :
         self.observed_ints = []
@@ -43,12 +51,7 @@ class PythonRandomContinuousIntStream :
             a = incremental_stream[-624]
             b = incremental_stream[-623]
             c = incremental_stream[-227]
-
-            x = ((a & 0x80000000) + (b & 0x7fffffff)) & 0xFFFFFFFF
-            twisted = c ^ (x >> 1)
-
-            if x & 1 != 0:
-                twisted ^= 0x9908b0df
+            twisted = twist(a,b,c)
             incremental_stream.append(twisted)
             result_stream.append(temper(twisted))
         return result_stream
